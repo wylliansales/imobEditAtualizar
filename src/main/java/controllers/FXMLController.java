@@ -1,5 +1,6 @@
 package controllers;
 
+import java.io.IOException;
 import models.ImobClienteTable;
 import java.net.URL;
 import java.sql.ResultSet;
@@ -21,7 +22,7 @@ import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
-import lib.ConectDB;
+import lib.ConnectDB;
 
 public class FXMLController implements Initializable {    
     
@@ -52,6 +53,10 @@ public class FXMLController implements Initializable {
     private TextField imobClienteTFimob;    
     @FXML
     private CheckBox imobClienteCBstatus;
+    @FXML
+    private TextField imobClienteTFbuscar;
+    
+    
     
     @FXML
     private Button imobClienteLimparButtonClick;
@@ -62,7 +67,7 @@ public class FXMLController implements Initializable {
     
    private ObservableList getDataFromClientesAndAddToObservableList(String query){
         ObservableList<ImobClienteTable> imobClienteTableData = FXCollections.observableArrayList();       
-        ConectDB db = new ConectDB("localhost", System.getProperty("user.dir")+"/BASE.fdb", "SYSDBA", "masterkey");
+        ConnectDB db = new ConnectDB("localhost", System.getProperty("user.dir")+"/BASE.fdb", "SYSDBA", "masterkey");
         db.connect();
         this.resultSet = db.executar(query);
         String status = "";
@@ -135,39 +140,113 @@ public class FXMLController implements Initializable {
     }
     
     
-     @FXML
-    private void setAdminTeacherEditButtonClick(Event event){
+    @FXML
+    private void setImobClienteEditButtonClick(Event event){
         ImobClienteTable getSelectedRow = imobClienteTableView.getSelectionModel().getSelectedItem();
         
-        ConectDB db = new ConectDB("localhost", System.getProperty("user.dir")+"/BASE.fdb", "SYSDBA", "masterkey");
+        ConnectDB db = new ConnectDB("localhost", System.getProperty("user.dir")+"/BASE.fdb", "SYSDBA", "masterkey");
         
-        String sqlQuery = "select * FROM clientes where clientes.id = '"+getSelectedRow.getImobClienteTableDataId()+"';";
-
-        try {
-           // connection = database.getConnection();
+        String sqlQuery = "select * FROM clientes where id = '"+getSelectedRow.getImobClienteTableDataId()+"';";
+              
+          
             db.connect();
             resultSet = db.executar(sqlQuery);
-            imobClienteSetAllEnable();
+              imobClienteSetAllEnable();
+        try {
             while(resultSet.next()) {
-                imobClienteColumnNome.setText(resultSet.getString("NOME"));
-                imobClienteColumnCnpj.setText(resultSet.getString("CNPJ"));
-                imobClienteColumnImob.setText(resultSet.getString("IMOB"));
-                if(resultSet.getInt("STATUS") == 1){
-                    imobClienteCBstatus.isSelected();
-                }
-                
-                
+                imobClienteTFnome.setText(resultSet.getString("NOME"));
+                imobClienteTFcnpj.setText(resultSet.getString("CNPJ"));
+                imobClienteTFimob.setText(resultSet.getString("IMOB"));
+                if(resultSet.getInt("STATUS") == 0){
+                imobClienteCBstatus.setSelected(true);
+                }                       
 
             }
-
             temp = String.valueOf(getSelectedRow.getImobClienteTableDataId());
             isImobClienteEditButtonClick = true;
-        }
-        catch (SQLException e) {
-            e.printStackTrace();
-        }
+            db.disconnect();
+        } catch (SQLException ex) {
+            Logger.getLogger(FXMLController.class.getName()).log(Level.SEVERE, null, ex);
+        }     
 
     }
+    
+    @FXML
+    private void setImobClienteSalvarButtonClick(Event event){
+         ConnectDB db = new ConnectDB("localhost", System.getProperty("user.dir")+"/BASE.fdb", "SYSDBA", "masterkey");
+         String status="1";
+         if(imobClienteCBstatus.isSelected()){
+             status = "0";
+         }
+       
+            db.connect();
+            if(isImobClienteAddNewButtonClick){
+                db.update("insert into `clientes` (`NOME`,`CNPJ`,`IMOB`,`STATUS`) values ('"+
+                        imobClienteTFnome.getText()+"','"+imobClienteTFcnpj.getText()+"','"+imobClienteTFimob.getText()+"','"+status
+                        +"') ;");
+            }
+            else if (isImobClienteEditButtonClick){               
+                db.update("update clientes set "+
+                        "NOME = '"+imobClienteTFnome.getText()+"',"+
+                        "CNPJ = '"+imobClienteTFcnpj.getText()+"',"+
+                        "IMOB = '"+imobClienteTFimob.getText()+"',"+
+                        "STATUS = '"+status+"'"+
+                        " where id = '"+temp+"';");
+            }
 
+
+            db.disconnect();           
+       
+        imobClienteSetAllLimpar();
+        imobClienteSetAllDisable();
+        imobClienteTableView.setItems(getDataFromClientesAndAddToObservableList("select *from Clientes"));
+        isImobClienteAddNewButtonClick=false;
+        isImobClienteEditButtonClick = false;
+    }
+
+    @FXML
+    private void setImobClienteLimparButtonClick(Event event){
+        imobClienteSetAllLimpar();
+        imobClienteSetAllDisable();
+        isImobClienteAddNewButtonClick = false;
+        isImobClienteEditButtonClick = false;
+    }
+    
+    @FXML
+    private void setImobClienteDeleteButtonClick(Event event){
+        ConnectDB db = new ConnectDB("localhost", System.getProperty("user.dir")+"/BASE.fdb", "SYSDBA", "masterkey");
+        ImobClienteTable getSelectedRow = imobClienteTableView.getSelectionModel().getSelectedItem();
+        String sqlQuery = "delete from clientes where id = '"+getSelectedRow.getImobClienteTableDataId()+"';";
+          
+           db.connect();
+           db.update(sqlQuery);
+            imobClienteTableView.setItems(getDataFromClientesAndAddToObservableList("SELECT * FROM clientes;"));
+            db.disconnect();
+        
+       
+    }
+    
+    @FXML
+    private void setAtualizarClientesButtonClick(Event event){
+       //adminTeacherTableView.setItems(getDataFromTeacherAndAddToObservableList("SELECT * FROM teacher;"));//sql Query
+       // adminTeacherTFSearch.clear();
+    }
+
+    @FXML
+    private void setimobClienteBuscarButtonClick(Event event){
+        String sqlQuery = "select * FROM clientes where nome CONTAINING '"+imobClienteTFbuscar.getText()+"';";
+        imobClienteTableView.setItems(getDataFromClientesAndAddToObservableList(sqlQuery));
+        imobClienteTFbuscar.clear();
+    }
+
+    @FXML
+    private void setCourseAboutButtonClick(Event event) throws IOException {
+     //   menuBarControl.about();
+    }
+
+    @FXML
+    private void setCourseCloseButtonClick(Event event){
+       // menuBarControl.close();
+    }
     
 }

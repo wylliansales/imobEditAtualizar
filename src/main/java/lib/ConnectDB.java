@@ -18,7 +18,7 @@ import javax.swing.JOptionPane;
  *
  * @author Suporte
  */
-public class ConectDB {
+public class ConnectDB {
     private String host;
     private String user;
     private String pass;
@@ -26,7 +26,7 @@ public class ConectDB {
     
     public Connection c;
     
-    public ConectDB ( String host, String database, String user, String pass ) {
+    public ConnectDB ( String host, String database, String user, String pass ) {
         this.pass = pass;
         this.user = user;
         this.host = host;
@@ -113,8 +113,23 @@ public class ConectDB {
         return null;
     }
      
+    public void update( String query ) {
+        Statement st;
+        int rs;
+       
+        try {
+            st = this.c.createStatement();
+            rs = st.executeUpdate(query);
+           
+        } catch ( SQLException e ) {
+            e.printStackTrace();
+        }       
+        
+    }      
+   
+  
      
-    public static String[] getEmpresaCnpj(ConectDB cc){
+    public static String[] getEmpresaCnpj(ConnectDB cc){
          String dados[]  = new String[2];
          
         if(cc.connect()){
