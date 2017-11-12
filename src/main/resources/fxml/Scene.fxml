@@ -16,7 +16,7 @@
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
 
-<AnchorPane id="AnchorPane" prefHeight="620.0" prefWidth="1180.0" xmlns="http://javafx.com/javafx/8.0.141" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.mycompany.teste.FXMLController">
+<AnchorPane id="AnchorPane" prefHeight="620.0" prefWidth="1180.0" xmlns="http://javafx.com/javafx/8.0.141" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.FXMLController">
    <children>
       <SplitPane dividerPositions="0.29797979797979796" prefHeight="620.0" prefWidth="1180.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
         <items>
@@ -57,17 +57,17 @@
                               <Font size="15.0" />
                            </font>
                         </Text>
-                        <TextField fx:id="imobClientTFcliente" GridPane.columnIndex="1" />
-                        <TextField fx:id="imobClientTFcnpj" prefWidth="216.0" GridPane.columnIndex="1" GridPane.rowIndex="1" />
-                        <TextField fx:id="imobClientTFimob" GridPane.columnIndex="1" GridPane.rowIndex="2" />
-                        <CheckBox mnemonicParsing="false" text="Bloqueado" GridPane.columnIndex="1" GridPane.rowIndex="3">
+                        <TextField fx:id="imobClienteTFnome" disable="true" GridPane.columnIndex="1" />
+                        <TextField fx:id="imobClienteTFcnpj" disable="true" prefWidth="216.0" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                        <TextField fx:id="imobClienteTFimob" disable="true" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+                        <CheckBox fx:id="imobClienteCBbloq" disable="true" mnemonicParsing="false" text="Bloqueado" GridPane.columnIndex="1" GridPane.rowIndex="3">
                            <font>
                               <Font size="15.0" />
                            </font>
                         </CheckBox>
                      </children>
                   </GridPane>
-                  <Button disable="true" layoutX="39.0" layoutY="428.0" mnemonicParsing="false" prefHeight="41.0" prefWidth="112.0" style="-fx-background-color: #FF5151;" text="Limpar" textFill="#fffefe" />
+                  <Button fx:id="imobClienteLimparButtonClick" disable="true" layoutX="39.0" layoutY="428.0" mnemonicParsing="false" prefHeight="41.0" prefWidth="112.0" style="-fx-background-color: #FF5151;" text="Limpar" textFill="#fffefe" />
                   <Button disable="true" layoutX="215.0" layoutY="428.0" mnemonicParsing="false" prefHeight="41.0" prefWidth="112.0" style="-fx-background-color: #408E2F;" text="Salvar" textFill="WHITE" />
                   <Separator layoutX="-1.0" layoutY="152.0" prefHeight="4.0" prefWidth="348.0" />
                   <Separator layoutX="1.0" layoutY="370.0" prefHeight="4.0" prefWidth="348.0" />
@@ -87,12 +87,13 @@
                         <Image url="@../img/iconeUploadd.png" />
                      </image>
                   </ImageView>
-                  <TableView layoutX="30.0" layoutY="95.0" prefHeight="511.0" prefWidth="765.0">
+                  <TableView fx:id="imobClienteTableView" layoutX="30.0" layoutY="95.0" prefHeight="511.0" prefWidth="784.0">
                     <columns>
-                      <TableColumn prefWidth="88.0" text="Status" />
-                      <TableColumn prefWidth="235.0" text="Cliente" />
-                        <TableColumn prefWidth="203.0" text="Cnpj" />
-                        <TableColumn prefWidth="238.0" text="Imob. Vinculada" />
+                      <TableColumn fx:id="imobClienteColumnId" prefWidth="50.0" text="ID" />
+                      <TableColumn fx:id="imobClienteColumnNome" prefWidth="229.0" text="Cliente" />
+                        <TableColumn fx:id="imobClienteColumnCnpj" prefWidth="169.0" text="Cnpj" />
+                        <TableColumn fx:id="imobClienteColumnImob" prefWidth="204.0" text="Imob" />
+                        <TableColumn fx:id="imobClienteColumnStatus" maxWidth="150.0" prefWidth="130.0" text="Status" />
                     </columns>
                   </TableView>
                   <TextField layoutX="521.0" layoutY="42.0" prefHeight="25.0" prefWidth="166.0" promptText="Cliente" />

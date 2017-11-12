@@ -11,7 +11,7 @@
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <mainClass>com.mycompany.teste.MainApp</mainClass>
+        <mainClass>controllers.MainApp</mainClass>
     </properties>
 
     <organization>
@@ -19,7 +19,7 @@
         <name>Your Organisation</name>
     </organization>
 
-    <build>
+     <build>
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
@@ -104,5 +104,38 @@
             </plugin>
         </plugins>
     </build>
+     
+     
+     <dependencies>
+         <dependency>
+             <groupId>com.dropbox.core</groupId>
+             <artifactId>dropbox-core-sdk</artifactId>
+             <version>3.0.5</version>
+         </dependency>
+         <dependency>
+             <groupId>com.sun.mail</groupId>
+             <artifactId>javax.mail</artifactId>
+             <version>1.6.0</version>
+         </dependency> 
+         <!-- https://mvnrepository.com/artifact/commons-io/commons-io -->
+         <!-- https://mvnrepository.com/artifact/org.firebirdsql.jdbc/jaybird -->
+           <dependency>
+             <groupId>commons-io</groupId>
+             <artifactId>commons-io</artifactId>
+             <version>2.5</version>
+         </dependency> 
+         
+         <!-- https://mvnrepository.com/artifact/org.firebirdsql.jdbc/jaybird-jdk18 -->
+        <dependency>
+            <groupId>org.firebirdsql.jdbc</groupId>
+            <artifactId>jaybird-jdk18</artifactId>
+            <version>2.2.12</version>   
+        </dependency>
+          <dependency>
+               <groupId>org.jdesktop</groupId>
+               <artifactId>beansbinding</artifactId>
+               <version>1.2.1</version>
+          </dependency>
+     </dependencies>
 
 </project>
