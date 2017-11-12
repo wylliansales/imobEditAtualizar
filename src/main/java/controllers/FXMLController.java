@@ -22,6 +22,7 @@ import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javax.swing.JOptionPane;
 import lib.ConnectDB;
 
 public class FXMLController implements Initializable {    
@@ -227,9 +228,15 @@ public class FXMLController implements Initializable {
     }
     
     @FXML
-    private void setAtualizarClientesButtonClick(Event event){
+    private void setUpClientesButtonClick(Event event){
        //adminTeacherTableView.setItems(getDataFromTeacherAndAddToObservableList("SELECT * FROM teacher;"));//sql Query
        // adminTeacherTFSearch.clear();
+       JOptionPane.showMessageDialog(null, "Em desenvolvimento!");
+    }
+    
+    @FXML
+    private void setUpImobButtonClick(Event event){
+        JOptionPane.showMessageDialog(null, "Em desenvolvimento!");
     }
 
     @FXML
@@ -247,6 +254,11 @@ public class FXMLController implements Initializable {
     @FXML
     private void setCourseCloseButtonClick(Event event){
        // menuBarControl.close();
+    }
+    
+    @FXML
+    private void setImobClienteConfigButtonClick(Event event){
+        JOptionPane.showMessageDialog(null, "Em desenvolvimento!");
     }
     
 }

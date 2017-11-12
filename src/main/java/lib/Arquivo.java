@@ -41,8 +41,9 @@ public class Arquivo {
         return "Cadastro não localizado";
     }
     
-    
-
+    public static void criarFile(){
+        
+    }
     
     
     

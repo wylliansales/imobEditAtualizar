@@ -75,8 +75,8 @@
             </AnchorPane>
           <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="160.0" prefWidth="100.0">
                <children>
-                  <Button id="atualizarImob" layoutX="34.0" layoutY="27.0" mnemonicParsing="false" prefHeight="41.0" prefWidth="166.0" style="-fx-background-color: #87CEEB;" text="Atualizar Imob.exe" textAlignment="RIGHT" wrapText="true" />
-                  <Button id="atualizarClientes" layoutX="210.0" layoutY="27.0" mnemonicParsing="false" onAction="#setAtualizarClientesButtonClick" prefHeight="41.0" prefWidth="166.0" style="-fx-background-color: #87CEEB;" text="Atualizer Clientes" />
+                  <Button id="atualizarImob" layoutX="34.0" layoutY="27.0" mnemonicParsing="false" onAction="#setUpImobButtonClick" prefHeight="41.0" prefWidth="166.0" style="-fx-background-color: #87CEEB;" text="Atualizar Imob.exe" textAlignment="RIGHT" wrapText="true" />
+                  <Button id="atualizarClientes" layoutX="210.0" layoutY="27.0" mnemonicParsing="false" onAction="#setUpClientesButtonClick" prefHeight="41.0" prefWidth="166.0" style="-fx-background-color: #87CEEB;" text="Atualizer Clientes" />
                   <ImageView fitHeight="20.0" fitWidth="19.0" layoutX="42.0" layoutY="38.0" pickOnBounds="true" preserveRatio="true">
                      <image>
                         <Image url="@../img/iconeUploadd.png" />
@@ -98,6 +98,12 @@
                   </TableView>
                   <TextField fx:id="imobClienteTFbuscar" layoutX="521.0" layoutY="42.0" prefHeight="25.0" prefWidth="166.0" promptText="Cliente" />
                   <Button layoutX="707.0" layoutY="42.0" mnemonicParsing="false" onAction="#setimobClienteBuscarButtonClick" prefHeight="25.0" prefWidth="85.0" style="-fx-background-color: #09B28C;" text="Buscar" textFill="#fffefe" />
+                  <ImageView fitHeight="25.0" fitWidth="35.0" layoutX="781.0" layoutY="6.0" pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@../img/config.png" />
+                     </image>
+                  </ImageView>
+                  <Button layoutX="769.0" layoutY="5.0" mnemonicParsing="false" onAction="#setImobClienteConfigButtonClick" opacity="0.0" text="Button" />
                </children>
             </AnchorPane>
         </items>

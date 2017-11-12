@@ -19,7 +19,7 @@
         <name>Your Organisation</name>
     </organization>
 
-     <build>
+   <build>
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
@@ -101,7 +101,7 @@
                         <additionalClasspathElement>${java.home}/lib/jfxrt.jar</additionalClasspathElement>
                     </additionalClasspathElements>
                 </configuration>
-            </plugin>
+            </plugin>    
         </plugins>
     </build>
      
