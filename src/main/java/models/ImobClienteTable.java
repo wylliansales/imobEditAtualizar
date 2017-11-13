@@ -22,14 +22,20 @@ public class ImobClienteTable {
     private final SimpleStringProperty ImobClienteTableDataImob;    
     private final SimpleStringProperty ImobClienteTableDataStatus;
 
+    /**
+     *
+     */
+    
 
-    public ImobClienteTable(int imobClienteTableDataId, String imobClienteTableDataStatus, String imobClienteTableDataNome, String imobClienteTableDataCnpj, String imobClienteTableDataImob) {
+    public ImobClienteTable(int imobClienteTableDataId, String imobClienteTableDataNome, String imobClienteTableDataCnpj, String imobClienteTableDataImob, String imobClienteTableDataStatus) {
         ImobClienteTableDataId = new SimpleIntegerProperty(imobClienteTableDataId);
-        ImobClienteTableDataStatus = new SimpleStringProperty(imobClienteTableDataStatus);
         ImobClienteTableDataNome = new SimpleStringProperty(imobClienteTableDataNome);
         ImobClienteTableDataCnpj = new SimpleStringProperty(imobClienteTableDataCnpj);
         ImobClienteTableDataImob = new SimpleStringProperty(imobClienteTableDataImob);
+        ImobClienteTableDataStatus = new SimpleStringProperty(imobClienteTableDataStatus);
     }
+    
+    
     
     public int getImobClienteTableDataId() {
         return ImobClienteTableDataId.get();

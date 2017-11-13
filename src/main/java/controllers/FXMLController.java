@@ -1,5 +1,6 @@
 package controllers;
 
+import java.io.File;
 import java.io.IOException;
 import models.ImobClienteTable;
 import java.net.URL;
@@ -23,18 +24,23 @@ import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javax.swing.JOptionPane;
-import lib.ConnectDB;
+import lib.Arquivo;
+import database.DataBaseFirebird;
+import database.Database;
+import java.sql.Connection;
+import java.util.List;
+import lib.Criptografia;
+import lib.DropBox;
+import lib.Msg;
+import sqlmodels.ImobClienteSql;
 
 public class FXMLController implements Initializable {    
-    
-    private ResultSet resultSet;
-    private String temp;
+        
+    private int temp;
     private boolean isImobClienteEditButtonClick;
-    private boolean isImobClienteAddNewButtonClick;
-    private String host = "localhost";
-    private String banco = System.getProperty("user.dir")+"/BASE.fdb";
-    private String user = "SYSDBA";
-    private String senha = "masterkey";
+    private boolean isImobClienteAddNewButtonClick;  
+    
+    
     
     @FXML
     TableView<ImobClienteTable> imobClienteTableView; 
@@ -68,47 +74,26 @@ public class FXMLController implements Initializable {
     @FXML
     private Button imobClienteSalvarButtonClick;
     
+    //private List<ImobClienteTable> listaImobClientes;    
+   // private ObservableList<ImobClienteTable> imobClienteTableData;
+    private final Database database = new DataBaseFirebird();
+    private final Connection connection = database.conectar();
+    private final ImobClienteSql  imobClientDB = new ImobClienteSql();
     
-    
-   private ObservableList getDataFromClientesAndAddToObservableList(String query){
-        ObservableList<ImobClienteTable> imobClienteTableData = FXCollections.observableArrayList();       
-        ConnectDB db = new ConnectDB(this.host, this.banco, this.user, this.senha);
-        db.connect();
-        this.resultSet = db.executar(query);
-        String status = "";
-        try {
-            while(resultSet.next()){
-                if(resultSet.getInt("STATUS") == 1){
-                    status = "LIBERADO";
-                } else {
-                    status = "BLOQUEADO";
-                }
-                imobClienteTableData.add(new ImobClienteTable(
-                        resultSet.getInt("ID"),
-                        status,
-                        resultSet.getString("NOME"),
-                        resultSet.getString("CNPJ"),
-                        resultSet.getString("IMOB")
-                ));
-            }
-            resultSet.close();
-            db.disconnect();
-        } catch (SQLException ex) {
-            Logger.getLogger(FXMLController.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        
-        return imobClienteTableData;
+   private ObservableList getDataFromClientesAndAddToObservableList(){        
+        return FXCollections.observableArrayList(imobClientDB.listar());
     }
     
     @Override
     public void initialize(URL url, ResourceBundle rb) {
+        imobClientDB.setConnection(connection);
         imobClienteColumnId.setCellValueFactory(new PropertyValueFactory<ImobClienteTable,Integer>("ImobClienteTableDataId"));
         imobClienteColumnNome.setCellValueFactory(new PropertyValueFactory<ImobClienteTable,String>("ImobClienteTableDataNome"));
         imobClienteColumnCnpj.setCellValueFactory(new PropertyValueFactory<ImobClienteTable,String>("ImobClienteTableDataCnpj"));
         imobClienteColumnImob.setCellValueFactory(new PropertyValueFactory<ImobClienteTable,String>("ImobClienteTableDataImob"));
         imobClienteColumnStatus.setCellValueFactory(new PropertyValueFactory<ImobClienteTable,String>("ImobClienteTableDataStatus"));
         
-       imobClienteTableView.setItems(getDataFromClientesAndAddToObservableList("select *from Clientes"));
+       imobClienteTableView.setItems(getDataFromClientesAndAddToObservableList());
     }
 
     @FXML
@@ -149,65 +134,48 @@ public class FXMLController implements Initializable {
     @FXML
     private void setImobClienteEditButtonClick(Event event){
         ImobClienteTable getSelectedRow = imobClienteTableView.getSelectionModel().getSelectedItem();
-        
-        ConnectDB db = new ConnectDB(this.host, this.banco, this.user, this.senha);
-        
-        String sqlQuery = "select * FROM clientes where id = '"+getSelectedRow.getImobClienteTableDataId()+"';";
-              
-          
-            db.connect();
-            resultSet = db.executar(sqlQuery);
-              imobClienteSetAllEnable();
-        try {
-            while(resultSet.next()) {
-                imobClienteTFnome.setText(resultSet.getString("NOME"));
-                imobClienteTFcnpj.setText(resultSet.getString("CNPJ"));
-                imobClienteTFimob.setText(resultSet.getString("IMOB"));
-                if(resultSet.getInt("STATUS") == 0){
-                imobClienteCBstatus.setSelected(true);
-                }                       
 
-            }
-            temp = String.valueOf(getSelectedRow.getImobClienteTableDataId());
-            isImobClienteEditButtonClick = true;
-            isImobClienteAddNewButtonClick = false;
-            db.disconnect();
-        } catch (SQLException ex) {
-            Logger.getLogger(FXMLController.class.getName()).log(Level.SEVERE, null, ex);
-        }     
+        ImobClienteTable imobCliente = imobClientDB.buscarUm(getSelectedRow.getImobClienteTableDataId());
 
-    }
+        imobClienteSetAllEnable();
+
+        imobClienteTFnome.setText(imobCliente.getImobClienteTableDataNome());
+        imobClienteTFcnpj.setText(imobCliente.getImobClienteTableDataCnpj());
+        imobClienteTFimob.setText(imobCliente.getImobClienteTableDataImob());
+        if ("0".equalsIgnoreCase(imobCliente.getImobClienteTableDataStatus())) {
+            imobClienteCBstatus.setSelected(true);
+        }
+        temp = imobCliente.getImobClienteTableDataId();
+        isImobClienteEditButtonClick = true;
+        isImobClienteAddNewButtonClick = false;
+    }        
+           
+
+
     
     @FXML
-    private void setImobClienteSalvarButtonClick(Event event){
-         ConnectDB db = new ConnectDB(this.host, this.banco, this.user, this.senha);
+    private void setImobClienteSalvarButtonClick(Event event){        
          String status="1";
          if(imobClienteCBstatus.isSelected()){
              status = "0";
-         }
+         }    
        
-            db.connect();
-            if(isImobClienteAddNewButtonClick){                
-                db.update("insert into clientes (NOME,CNPJ,IMOB,STATUS) values ('"+
-                        imobClienteTFnome.getText()+"','"+imobClienteTFcnpj.getText()+"','"+imobClienteTFimob.getText()+"','"+status
-                        +"');");
-                
+            if(isImobClienteAddNewButtonClick){   
+                ImobClienteTable imobCliente = new ImobClienteTable(0,imobClienteTFnome.getText(), imobClienteTFcnpj.getText(), imobClienteTFimob.getText(),status);    
+                if(!imobClientDB.inserir(imobCliente)){
+                    Msg.msg("error", "Não foi possível cadastrar o cliente", "Cadastro de cliente");
+                }
             }
-            else if (isImobClienteEditButtonClick){               
-                db.update("update clientes set "+
-                        "NOME = '"+imobClienteTFnome.getText()+"',"+
-                        "CNPJ = '"+imobClienteTFcnpj.getText()+"',"+
-                        "IMOB = '"+imobClienteTFimob.getText()+"',"+
-                        "STATUS = '"+status+"'"+
-                        " where id = '"+temp+"';");
-            }
-
-
-            db.disconnect();           
+            else if (isImobClienteEditButtonClick){ 
+                ImobClienteTable imobCliente = new ImobClienteTable(temp,imobClienteTFnome.getText(), imobClienteTFcnpj.getText(), imobClienteTFimob.getText(),status);
+                if(!imobClientDB.alterar(imobCliente)){
+                    Msg.msg("error", "Não foi possível atualizar o cliente", "Atualizar cliente");
+                }
+            }        
        
         imobClienteSetAllLimpar();
         imobClienteSetAllDisable();
-        imobClienteTableView.setItems(getDataFromClientesAndAddToObservableList("select *from Clientes"));
+        imobClienteTableView.setItems(getDataFromClientesAndAddToObservableList());
         isImobClienteAddNewButtonClick=false;
         isImobClienteEditButtonClick = false;
     }
@@ -221,24 +189,42 @@ public class FXMLController implements Initializable {
     }
     
     @FXML
-    private void setImobClienteDeleteButtonClick(Event event){
-        ConnectDB db = new ConnectDB(this.host, this.banco, this.user, this.senha);
+    private void setImobClienteDeleteButtonClick(Event event){        
         ImobClienteTable getSelectedRow = imobClienteTableView.getSelectionModel().getSelectedItem();
-        String sqlQuery = "delete from clientes where id = '"+getSelectedRow.getImobClienteTableDataId()+"';";
-          
-           db.connect();
-           db.update(sqlQuery);
-            imobClienteTableView.setItems(getDataFromClientesAndAddToObservableList("SELECT * FROM clientes;"));
-            db.disconnect();
+                           
+        if(!imobClientDB.remover(getSelectedRow.getImobClienteTableDataId())){
+            Msg.msg("error", "Não foi possível excluir o cliente", "Excluindo cliente");
+        }       
+        imobClienteTableView.setItems(getDataFromClientesAndAddToObservableList());
+           
         
        
     }
     
     @FXML
-    private void setUpClientesButtonClick(Event event){
-       //adminTeacherTableView.setItems(getDataFromTeacherAndAddToObservableList("SELECT * FROM teacher;"));//sql Query
-       // adminTeacherTFSearch.clear();
-       JOptionPane.showMessageDialog(null, "Em desenvolvimento!");
+    private void setUpClientesButtonClick(Event event) throws Exception{
+     /*  DataBaseFirebird db = new DataBaseFirebird(this.host, this.banco, this.user, this.senha);
+       db.connect();
+       String query = "SELECT CNPJ, STATUS FROM CLIENTES";
+       resultSet = db.executar(query);
+       String conteudo = "";
+        try {
+            while(resultSet.next()){
+                conteudo += Criptografia.criptografar(resultSet.getString("CNPJ") + "=" + resultSet.getString("STATUS")) + "\r\n";
+            }} catch (SQLException ex) {
+            Logger.getLogger(FXMLController.class.getName()).log(Level.SEVERE, null, ex);
+        }
+      //  resultSet.close();
+        Arquivo.criarFile(conteudo, "0000000000.txt");        
+        DropBox box = new DropBox();
+        box.delete("/0000000000.txt");
+        box.upload("0000000000.txt");
+        File f = new File("0000000000.txt");
+        f.delete();
+
+        
+        
+       JOptionPane.showMessageDialog(null, "Em desenvolvimento!");*/
     }
     
     @FXML
@@ -248,8 +234,14 @@ public class FXMLController implements Initializable {
 
     @FXML
     private void setimobClienteBuscarButtonClick(Event event){
-        String sqlQuery = "select * FROM clientes where nome CONTAINING '"+imobClienteTFbuscar.getText()+"';";
-        imobClienteTableView.setItems(getDataFromClientesAndAddToObservableList(sqlQuery));
+        String sqlQuery = "select * FROM clientes where nome CONTAINING '"+imobClienteTFbuscar.getText()+"';";        
+        List<ImobClienteTable> lista = imobClientDB.buscar(imobClienteTFbuscar.getText());
+        
+        if(lista.isEmpty()){
+           imobClienteTableView.setItems(getDataFromClientesAndAddToObservableList()); 
+        }else {
+           imobClienteTableView.setItems(FXCollections.observableArrayList(lista));  
+        }      
         imobClienteTFbuscar.clear();
     }
 
@@ -267,5 +259,7 @@ public class FXMLController implements Initializable {
     private void setImobClienteConfigButtonClick(Event event){
         JOptionPane.showMessageDialog(null, "Em desenvolvimento!");
     }
+    
+    
     
 }

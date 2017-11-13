@@ -3,6 +3,7 @@ package lib;
 
 
 
+import database.DataBaseFirebird;
 import com.dropbox.core.DbxDownloader;
 import com.dropbox.core.DbxException;
 import com.dropbox.core.DbxRequestConfig;
@@ -23,6 +24,9 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;
+import java.sql.Connection;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
@@ -38,27 +42,24 @@ import java.util.zip.ZipOutputStream;
 import javax.swing.JOptionPane;
 
 
-public class Dropbox {   
-    //private String ACCESS_TOKEN = "KzyUksEJHXAAAAAAAAAAoe5LOZwFNPKa4Od8ySvBTwbWqY3RyP6-hvSDfkeFqF2G";
-    //SimpleDateFormat sdff = new SimpleDateFormat("ddMMyyyyHHmm");
+public class DropBox{    
     DbxClientV2 client;
     DbxRequestConfig config;        
-    public Dropbox(String ACCESS_TOKEN){
+    public DropBox(){
         // Create Dropbox client
          config = new DbxRequestConfig("dropbox/java-tutorial", Locale.getDefault().toString());
-         client = new DbxClientV2(config, ACCESS_TOKEN);
+         client = new DbxClientV2(config, getToken());
     }    
      
      
-     public void upload(String arquivo) throws DbxException{          
+     public void upload(String arquivo) throws DbxException, FileNotFoundException, IOException{ 
+        
         try (InputStream in = new FileInputStream(arquivo)) {
-            FileMetadata metadata = client.files().uploadBuilder("/"+ arquivo)
-                .uploadAndFinish(in); 
-        } catch (FileNotFoundException ex) {
-             System.out.println("Erro no upload, entre em contato com suporte!");
-         } catch (IOException ex) {
-             System.out.println("Erro no upload, entre em contato com suporte!");
-         }
+            FileMetadata metadata = client.files().uploadBuilder("/"+arquivo)
+                .uploadAndFinish(in);
+            in.close();
+        }
+        
      }   
      
     public void dowloand(String location, String remote) throws FileNotFoundException, DbxException, IOException {
@@ -92,5 +93,32 @@ public class Dropbox {
             }
             result = client.files().listFolderContinue(result.getCursor());
         }
+    }
+    
+    private String getToken(){
+        DataBaseFirebird db = new DataBaseFirebird();
+        Connection connection;
+        String query = "SELECT TOKEN FROM SETUP";
+        connection = db.conectar();
+        ResultSet resultSet = db.executar(query);
+        String token = null;
+        try {
+            while(resultSet.next()){
+                token = resultSet.getString("TOKEN");
+            }
+        db.desconectar(connection);
+        resultSet.close();
+        } catch (SQLException ex) {
+            Logger.getLogger(DropBox.class.getName()).log(Level.SEVERE, null, ex);
+            
+        }
+        
+        if(token == null){
+            Msg.msg("error", "Procedimento não concluído, token não cadastrado", "Obtendo TOKEN");
+            JOptionPane.showMessageDialog(null, token);
+        } else {
+            return token;
+        }      
+        return token;
     }
 }

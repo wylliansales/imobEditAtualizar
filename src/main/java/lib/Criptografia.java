@@ -23,7 +23,7 @@ public class Criptografia {
     
     public static String criptografar(String mensagem) throws Exception {
 
-        final Cipher cipher = getCipher(Cipher.ENCRYPT_MODE, "MhlZukWsyijZwhW5oo");
+        final Cipher cipher = getCipher(Cipher.ENCRYPT_MODE, "MhlZukWsyijZwhWdsghfdjfghj!@#$!@%$##$%ÄSDFASDFasdf5oo");
 
         final byte[] criptografado = cipher.doFinal(mensagem.getBytes("UTF-8"));
 
@@ -32,7 +32,7 @@ public class Criptografia {
 
     public static String descriptografar(String mensagem) throws Exception {
         
-        final Cipher cipher = getCipher(Cipher.DECRYPT_MODE, "MhlZukWsyijZwhW5oo");
+        final Cipher cipher = getCipher(Cipher.DECRYPT_MODE, "MhlZukWsyijZwhWdsghfdjfghj!@#$!@%$##$%ÄSDFASDFasdf5oo");
 
         final byte[] descriptografado = cipher.doFinal(Base64.getDecoder().decode(mensagem));
 

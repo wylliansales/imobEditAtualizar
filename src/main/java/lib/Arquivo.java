@@ -11,14 +11,18 @@ package lib;
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
@@ -32,17 +36,35 @@ public class Arquivo {
         FileReader file = new FileReader(new File(arquiv));
         BufferedReader ler = new BufferedReader(file);
         String linha = null;
-
         while ((linha = ler.readLine()) != null) {
             linha =  Criptografia.descriptografar(linha);            
-                return linha.substring(15);          
-            
+            return linha.substring(15);            
         }
         return "Cadastro não localizado";
     }
     
-    public static void criarFile(){
+    public static void criarFile(String conteudo,String nomeArquivo){
+        File f = new File(nomeArquivo);
         
+        if(!f.exists()){
+            try {
+                f.createNewFile();
+            } catch (IOException ex) {
+                Logger.getLogger(Arquivo.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+                   
+        try {
+          FileWriter  fw = new FileWriter(f);
+          BufferedWriter gravar = new BufferedWriter(fw);          
+          gravar.write(conteudo);
+          gravar.flush();
+          gravar.close();
+        } catch (IOException ex) {
+            Logger.getLogger(Arquivo.class.getName()).log(Level.SEVERE, null, ex);
+            Msg.msg("error", "Procedimento não concluído, ocorreu um erro....!", "Gravação de arquivo");
+        }
+                
     }
     
     
