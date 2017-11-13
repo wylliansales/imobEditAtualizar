@@ -31,6 +31,10 @@ public class FXMLController implements Initializable {
     private String temp;
     private boolean isImobClienteEditButtonClick;
     private boolean isImobClienteAddNewButtonClick;
+    private String host = "localhost";
+    private String banco = System.getProperty("user.dir")+"/BASE.fdb";
+    private String user = "SYSDBA";
+    private String senha = "masterkey";
     
     @FXML
     TableView<ImobClienteTable> imobClienteTableView; 
@@ -68,16 +72,16 @@ public class FXMLController implements Initializable {
     
    private ObservableList getDataFromClientesAndAddToObservableList(String query){
         ObservableList<ImobClienteTable> imobClienteTableData = FXCollections.observableArrayList();       
-        ConnectDB db = new ConnectDB("localhost", System.getProperty("user.dir")+"/BASE.fdb", "SYSDBA", "masterkey");
+        ConnectDB db = new ConnectDB(this.host, this.banco, this.user, this.senha);
         db.connect();
         this.resultSet = db.executar(query);
         String status = "";
         try {
             while(resultSet.next()){
                 if(resultSet.getInt("STATUS") == 1){
-                    status = "Liberado";
+                    status = "LIBERADO";
                 } else {
-                    status = "bloqueado";
+                    status = "BLOQUEADO";
                 }
                 imobClienteTableData.add(new ImobClienteTable(
                         resultSet.getInt("ID"),
@@ -111,6 +115,7 @@ public class FXMLController implements Initializable {
     private void setImobClienterAddNewButtonClick(Event event){
         imobClienteSetAllEnable();
         isImobClienteAddNewButtonClick = true;
+        isImobClienteEditButtonClick = false;
     }
     
      private void imobClienteSetAllEnable(){
@@ -145,7 +150,7 @@ public class FXMLController implements Initializable {
     private void setImobClienteEditButtonClick(Event event){
         ImobClienteTable getSelectedRow = imobClienteTableView.getSelectionModel().getSelectedItem();
         
-        ConnectDB db = new ConnectDB("localhost", System.getProperty("user.dir")+"/BASE.fdb", "SYSDBA", "masterkey");
+        ConnectDB db = new ConnectDB(this.host, this.banco, this.user, this.senha);
         
         String sqlQuery = "select * FROM clientes where id = '"+getSelectedRow.getImobClienteTableDataId()+"';";
               
@@ -165,6 +170,7 @@ public class FXMLController implements Initializable {
             }
             temp = String.valueOf(getSelectedRow.getImobClienteTableDataId());
             isImobClienteEditButtonClick = true;
+            isImobClienteAddNewButtonClick = false;
             db.disconnect();
         } catch (SQLException ex) {
             Logger.getLogger(FXMLController.class.getName()).log(Level.SEVERE, null, ex);
@@ -174,17 +180,18 @@ public class FXMLController implements Initializable {
     
     @FXML
     private void setImobClienteSalvarButtonClick(Event event){
-         ConnectDB db = new ConnectDB("localhost", System.getProperty("user.dir")+"/BASE.fdb", "SYSDBA", "masterkey");
+         ConnectDB db = new ConnectDB(this.host, this.banco, this.user, this.senha);
          String status="1";
          if(imobClienteCBstatus.isSelected()){
              status = "0";
          }
        
             db.connect();
-            if(isImobClienteAddNewButtonClick){
-                db.update("insert into `clientes` (`NOME`,`CNPJ`,`IMOB`,`STATUS`) values ('"+
+            if(isImobClienteAddNewButtonClick){                
+                db.update("insert into clientes (NOME,CNPJ,IMOB,STATUS) values ('"+
                         imobClienteTFnome.getText()+"','"+imobClienteTFcnpj.getText()+"','"+imobClienteTFimob.getText()+"','"+status
-                        +"') ;");
+                        +"');");
+                
             }
             else if (isImobClienteEditButtonClick){               
                 db.update("update clientes set "+
@@ -215,7 +222,7 @@ public class FXMLController implements Initializable {
     
     @FXML
     private void setImobClienteDeleteButtonClick(Event event){
-        ConnectDB db = new ConnectDB("localhost", System.getProperty("user.dir")+"/BASE.fdb", "SYSDBA", "masterkey");
+        ConnectDB db = new ConnectDB(this.host, this.banco, this.user, this.senha);
         ImobClienteTable getSelectedRow = imobClienteTableView.getSelectionModel().getSelectedItem();
         String sqlQuery = "delete from clientes where id = '"+getSelectedRow.getImobClienteTableDataId()+"';";
           
