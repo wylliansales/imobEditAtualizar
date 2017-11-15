@@ -9,6 +9,7 @@ package lib;
 
     import java.security.Key;
     import java.util.Base64;
+import javafx.scene.control.TextField;
     import javax.crypto.Cipher;
     import javax.crypto.spec.IvParameterSpec;
     import javax.crypto.spec.SecretKeySpec;
@@ -23,7 +24,7 @@ public class Criptografia {
     
     public static String criptografar(String mensagem) throws Exception {
 
-        final Cipher cipher = getCipher(Cipher.ENCRYPT_MODE, "MhlZukWsyijZwhWdsghfdjfghj!@#$!@%$##$%ÄSDFASDFasdf5oo");
+        final Cipher cipher = getCipher(Cipher.ENCRYPT_MODE, "MhlZukWsyijZwhWdsghfdjfghSDFASDFasdf5oo");
 
         final byte[] criptografado = cipher.doFinal(mensagem.getBytes("UTF-8"));
 
@@ -32,7 +33,7 @@ public class Criptografia {
 
     public static String descriptografar(String mensagem) throws Exception {
         
-        final Cipher cipher = getCipher(Cipher.DECRYPT_MODE, "MhlZukWsyijZwhWdsghfdjfghj!@#$!@%$##$%ÄSDFASDFasdf5oo");
+        final Cipher cipher = getCipher(Cipher.DECRYPT_MODE, "MhlZukWsyijZwhWdsghfdjfghSDFASDFasdf5oo");
 
         final byte[] descriptografado = cipher.doFinal(Base64.getDecoder().decode(mensagem));
 
@@ -54,5 +55,9 @@ public class Criptografia {
         System.arraycopy(utf8, 0, key, 0, utf8.length < 16 ? utf8.length : 16);
 
         return new SecretKeySpec(key, "AES");
+    }
+
+    public static String descriptografar(TextField configTFsenha) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 }

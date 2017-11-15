@@ -113,7 +113,7 @@ public class DropBox{
             
         }
         
-        if(token == null){
+        if(token == null || token == ""){
             Msg.msg("error", "Procedimento não concluído, token não cadastrado", "Obtendo TOKEN");
             JOptionPane.showMessageDialog(null, token);
         } else {

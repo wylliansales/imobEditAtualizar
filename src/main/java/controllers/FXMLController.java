@@ -1,36 +1,39 @@
 package controllers;
 
-import java.io.File;
+
 import java.io.IOException;
 import models.ImobClienteTable;
 import java.net.URL;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
+
 import java.util.ResourceBundle;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.event.ActionEvent;
+
 import javafx.event.Event;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
-import javafx.scene.control.Label;
+
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javax.swing.JOptionPane;
-import lib.Arquivo;
+
 import database.DataBaseFirebird;
 import database.Database;
 import java.sql.Connection;
 import java.util.List;
-import lib.Criptografia;
-import lib.DropBox;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
+import javafx.scene.layout.AnchorPane;
+import javafx.scene.paint.Color;
+import javafx.stage.Stage;
+import javafx.stage.StageStyle;
+
 import lib.Msg;
 import sqlmodels.ImobClienteSql;
 
@@ -74,6 +77,8 @@ public class FXMLController implements Initializable {
     @FXML
     private Button imobClienteSalvarButtonClick;
     
+    
+    
     //private List<ImobClienteTable> listaImobClientes;    
    // private ObservableList<ImobClienteTable> imobClienteTableData;
     private final Database database = new DataBaseFirebird();
@@ -86,6 +91,9 @@ public class FXMLController implements Initializable {
     
     @Override
     public void initialize(URL url, ResourceBundle rb) {
+        if(connection == null){
+            Msg.msg("error", "Falha ao conectar com o banco de dados!", "Banco de dados");
+        }
         imobClientDB.setConnection(connection);
         imobClienteColumnId.setCellValueFactory(new PropertyValueFactory<ImobClienteTable,Integer>("ImobClienteTableDataId"));
         imobClienteColumnNome.setCellValueFactory(new PropertyValueFactory<ImobClienteTable,String>("ImobClienteTableDataNome"));
@@ -202,29 +210,20 @@ public class FXMLController implements Initializable {
     }
     
     @FXML
-    private void setUpClientesButtonClick(Event event) throws Exception{
-     /*  DataBaseFirebird db = new DataBaseFirebird(this.host, this.banco, this.user, this.senha);
-       db.connect();
-       String query = "SELECT CNPJ, STATUS FROM CLIENTES";
-       resultSet = db.executar(query);
-       String conteudo = "";
-        try {
-            while(resultSet.next()){
-                conteudo += Criptografia.criptografar(resultSet.getString("CNPJ") + "=" + resultSet.getString("STATUS")) + "\r\n";
-            }} catch (SQLException ex) {
-            Logger.getLogger(FXMLController.class.getName()).log(Level.SEVERE, null, ex);
-        }
-      //  resultSet.close();
-        Arquivo.criarFile(conteudo, "0000000000.txt");        
-        DropBox box = new DropBox();
-        box.delete("/0000000000.txt");
-        box.upload("0000000000.txt");
-        File f = new File("0000000000.txt");
-        f.delete();
-
+    private AnchorPane anchorPane;
+    
+    @FXML
+    private void setUpClientesButtonClick(Event event) throws Exception{        
+        Parent root = FXMLLoader.load(getClass().getResource("/fxml/UpCliente.fxml"));        
+        Stage stage = new Stage();
+        Scene scene = new Scene(root);       
         
-        
-       JOptionPane.showMessageDialog(null, "Em desenvolvimento!");*/
+        scene.setFill(Color.TRANSPARENT);
+        stage.setScene(scene);
+       // stage.setResizable(false); 
+        //stage.initStyle(StageStyle.UNDECORATED);
+       stage.initStyle(StageStyle.TRANSPARENT);      
+       stage.showAndWait();
     }
     
     @FXML
@@ -233,13 +232,12 @@ public class FXMLController implements Initializable {
     }
 
     @FXML
-    private void setimobClienteBuscarButtonClick(Event event){
-        String sqlQuery = "select * FROM clientes where nome CONTAINING '"+imobClienteTFbuscar.getText()+"';";        
-        List<ImobClienteTable> lista = imobClientDB.buscar(imobClienteTFbuscar.getText());
+    private void setimobClienteBuscarButtonClick(Event event){     
         
-        if(lista.isEmpty()){
+        if(imobClienteTFbuscar.getText().equalsIgnoreCase("")){
            imobClienteTableView.setItems(getDataFromClientesAndAddToObservableList()); 
         }else {
+            List<ImobClienteTable> lista = imobClientDB.buscar(imobClienteTFbuscar.getText());
            imobClienteTableView.setItems(FXCollections.observableArrayList(lista));  
         }      
         imobClienteTFbuscar.clear();
@@ -256,10 +254,18 @@ public class FXMLController implements Initializable {
     }
     
     @FXML
-    private void setImobClienteConfigButtonClick(Event event){
-        JOptionPane.showMessageDialog(null, "Em desenvolvimento!");
+    private void setImobClienteConfigButtonClick(Event event) throws IOException{
+        Parent root = FXMLLoader.load(getClass().getResource("/fxml/Config.fxml"));
+        Stage stage = new Stage();
+        Scene scene = new Scene(root);
+        stage.setTitle("Configurações");
+        stage.setScene(scene);
+        stage.setResizable(false);
+        stage.show();
+    
     }
     
-    
+   
+        
     
 }

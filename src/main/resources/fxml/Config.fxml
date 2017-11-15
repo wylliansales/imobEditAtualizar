@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.SplitPane?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.text.Font?>
+<?import javafx.scene.text.Text?>
+
+<AnchorPane id="AnchorPane" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8.0.141" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.ConfigController">
+   <children>
+      <SplitPane dividerPositions="0.22110552763819097" layoutX="300.0" layoutY="51.0" orientation="VERTICAL" prefHeight="400.0" prefWidth="600.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+        <items>
+          <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="100.0" prefWidth="160.0" style="-fx-background-color: #2b333b;">
+               <children>
+                  <Text fill="WHITE" layoutX="166.0" layoutY="52.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Configurações da conta" wrappingWidth="279.2734375" AnchorPane.leftAnchor="166.0">
+                     <font>
+                        <Font name="System Bold" size="25.0" />
+                     </font>
+                  </Text>
+                  <ImageView fitHeight="66.0" fitWidth="101.0" layoutX="54.0" layoutY="12.0" pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@../img/config1.png" />
+                     </image>
+                  </ImageView>
+               </children>
+            </AnchorPane>
+          <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="100.0" prefWidth="160.0" style="-fx-background-color: #2b333b;">
+               <children>
+                  <GridPane layoutX="51.0" layoutY="44.0" prefHeight="180.0" prefWidth="535.0" AnchorPane.bottomAnchor="80.0" AnchorPane.leftAnchor="51.0" AnchorPane.rightAnchor="51.0" AnchorPane.topAnchor="44.0">
+                    <columnConstraints>
+                      <ColumnConstraints hgrow="SOMETIMES" maxWidth="205.0" minWidth="10.0" prefWidth="84.0" />
+                      <ColumnConstraints hgrow="SOMETIMES" maxWidth="451.0" minWidth="10.0" prefWidth="451.0" />
+                    </columnConstraints>
+                    <rowConstraints>
+                        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                      <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                      <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                    </rowConstraints>
+                     <children>
+                        <Text fill="WHITE" strokeType="OUTSIDE" strokeWidth="0.0" text="Email" GridPane.rowIndex="1" />
+                        <Text fill="WHITE" strokeType="OUTSIDE" strokeWidth="0.0" text="Senha" GridPane.rowIndex="2" />
+                        <TextField fx:id="configTFemail" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                        <TextField fx:id="configTFsenha" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+                        <Text fill="#fffbfb" strokeType="OUTSIDE" strokeWidth="0.0" text="Token" />
+                        <TextField fx:id="configTFtoken" GridPane.columnIndex="1" />
+                     </children>
+                  </GridPane>
+                  <Button layoutX="443.0" layoutY="239.0" mnemonicParsing="false" onAction="#setImobConfigSalvarButtonClick" prefHeight="33.0" prefWidth="105.0" style="-fx-background-color: #408E2F;" text="Salvar" textFill="WHITE" />
+               </children>
+            </AnchorPane>
+        </items>
+      </SplitPane>
+   </children>
+</AnchorPane>

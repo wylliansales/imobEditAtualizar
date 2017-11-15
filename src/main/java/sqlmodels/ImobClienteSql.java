@@ -5,14 +5,17 @@
  */
 package sqlmodels;
 
+import controllers.FXMLController;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import lib.Criptografia;
 import models.ImobClienteTable;
 
 /**
@@ -83,11 +86,11 @@ public class ImobClienteSql {
             PreparedStatement stmt = connection.prepareStatement(sql);
             ResultSet resultado = stmt.executeQuery();
             String status = null;
-            while (resultado.next()) {
+            while (resultado.next()) {                
                 if("1".equalsIgnoreCase(resultado.getString("STATUS"))){
-                    status = "LIBERADA";
+                    status = "LIBERADO";
                 } else {
-                    status = "CANCELADA";
+                    status = "BLOQUEADO";
                 }
                 ImobClienteTable imobClienteTable = new ImobClienteTable(resultado.getInt("ID"),resultado.getString("NOME")
                         ,resultado.getString("CNPJ"),resultado.getString("IMOB"),status);
@@ -108,18 +111,20 @@ public class ImobClienteSql {
             stmt.setString(1, nome);
             ResultSet resultado = stmt.executeQuery();
             String status = null;
-            if (resultado.next()) {
+            while (resultado.next()) {                
                 if("1".equalsIgnoreCase(resultado.getString("STATUS"))){
-                    status = "LIBERADA";
+                    status = "LIBERADO";
                 } else {
-                    status = "CANCELADA";
-                }               
+                    status = "BLOQUEADO";
+                }         
+                
                 retorno.add(new ImobClienteTable(resultado.getInt("ID"), resultado.getString("NOME")
                         ,resultado.getString("CNPJ"),resultado.getString("IMOB"),status));               
             }
         } catch (SQLException ex) {
             Logger.getLogger(ImobClienteSql.class.getName()).log(Level.SEVERE, null, ex);
         }
+       
         return retorno;
     }
     
@@ -134,9 +139,9 @@ public class ImobClienteSql {
             String status = null;
             if (resultado.next()) {
                 if("1".equalsIgnoreCase(resultado.getString("STATUS"))){
-                    status = "LIBERADA";
+                    status = "LIBERADO";
                 } else {
-                    status = "CANCELADA";
+                    status = "BLQOUEADO";
                 }
                 retorno = new ImobClienteTable(resultado.getInt("ID"), resultado.getString("NOME")
                         ,resultado.getString("CNPJ"),resultado.getString("IMOB"),status); 
@@ -147,5 +152,27 @@ public class ImobClienteSql {
             Logger.getLogger(ImobClienteSql.class.getName()).log(Level.SEVERE, null, ex);
         }
         return retorno;
+    }
+    
+    
+     public String clienteCnpjStatus() throws Exception {
+        String sql = "SELECT CNPJ, STATUS FROM clientes";
+        String conteudo = "";
+       
+        try {
+            PreparedStatement stmt = connection.prepareStatement(sql);
+            ResultSet  resultado = stmt.executeQuery(); 
+            try {
+            while(resultado.next()){
+                conteudo += Criptografia.criptografar(resultado.getString("CNPJ") + "=" + resultado.getString("STATUS")) + "\r\n";
+            }} catch (SQLException ex) {
+            Logger.getLogger(FXMLController.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        } catch ( SQLException e ) {
+            e.printStackTrace();
+            return null;
+        }   
+       
+        return conteudo;
     }
 }
