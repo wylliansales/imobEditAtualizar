@@ -60,7 +60,7 @@ public class ConfigController implements Initializable {
     
     private void buscarDados() throws Exception{
         ConfigTable config = configDB.buscarUm(1);
-        System.out.println(config.getEmail());
+        
         configTFtoken.setText(config.getToken().equalsIgnoreCase("")?"":config.getToken());
         configTFemail.setText(config.getEmail() == null?"":config.getEmail());
         configTFsenha.setText(config.getSenha() == null?"":Criptografia.descriptografar(config.getSenha()));

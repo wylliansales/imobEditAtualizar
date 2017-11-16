@@ -35,10 +35,8 @@ import sqlmodels.ImobClienteSql;
  * @author suporte
  */
 public class UpClienteController implements Initializable {
-
-    @FXML
-    private Label labelUpCliente;
-    
+    private static final long CHUNKED_UPLOAD_CHUNK_SIZE = 1L << 20;
+     
     @FXML
     private AnchorPane anchorPaneUpCliente;
     
@@ -67,32 +65,30 @@ public class UpClienteController implements Initializable {
         thread.start();
     }    
     
-   private Task taskWorker(final int seconds){
-       return new Task(){
-           @Override
-           protected Object call() throws Exception {   
-             //  updateProgress(0 + 1, seconds);
-               String conteudo = imobClientDB.clienteCnpjStatus();
-             //  updateProgress(1 + 1, seconds);
-               Arquivo.criarFile(conteudo, "0000000000.txt");
-            //   updateProgress(2 + 1, seconds);
-               box.delete("/0000000000.txt");
-            //   updateProgress(3 + 1, seconds);
-               box.upload("0000000000.txt");
-            //   updateProgress(4 + 1, seconds);
-               File f = new File("0000000000.txt");
-            //   updateProgress(5 + 1, seconds);
-               f.delete();               
-             updateProgress(10, seconds);  
-             Thread.sleep(1000);
-              /* for (int i = 6; i < seconds; i++) {
+    private Task taskWorker(final int seconds) {
+        return new Task() {
+            @Override
+            protected Object call() throws Exception {               
+                String conteudo = imobClientDB.clienteCnpjStatus();                
+                Arquivo.criarFile(conteudo, "0000000000.txt");                
+                box.delete("0000000000.txt");  
+              /*  File upFile = new File("0000000000.txt");
+                if(upFile.length() <=(2 * CHUNKED_UPLOAD_CHUNK_SIZE)){
+                        box.uploadFile(box.getClient(), upFile, "/0000000000.txt");
+                    }else{
+                        box.chunkedUploadFile(box.getClient(), upFile, "/0000000000.txt");
+                    }             */     
+                Arquivo.deleteFile("0000000000.txt");
+                updateProgress(10, seconds);
+                Thread.sleep(1000);
+                /* for (int i = 6; i < seconds; i++) {
                    updateProgress(i + 1, seconds);
                    Thread.sleep(80);
                }*/
-               return true;
-           }
-       ;
-       };
+                return true;
+            }
+        ;
+    };
    }
     
 }

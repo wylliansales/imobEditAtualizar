@@ -24,6 +24,7 @@ import javax.swing.JOptionPane;
 
 import database.DataBaseFirebird;
 import database.Database;
+import java.io.File;
 import java.sql.Connection;
 import java.util.List;
 import javafx.fxml.FXMLLoader;
@@ -33,8 +34,11 @@ import javafx.scene.layout.AnchorPane;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
+import javax.swing.JFileChooser;
 
 import lib.Msg;
+import models.ConfigTable;
+import sqlmodels.ConfigSql;
 import sqlmodels.ImobClienteSql;
 
 public class FXMLController implements Initializable {    
@@ -162,12 +166,18 @@ public class FXMLController implements Initializable {
 
     
     @FXML
-    private void setImobClienteSalvarButtonClick(Event event){        
-         String status="1";
+    private void setImobClienteSalvarButtonClick(Event event){ 
+        String cnpj = imobClienteTFcnpj.getText().replace(".", "");
+        cnpj = cnpj.replace("/", "");
+        cnpj = cnpj.replace("-", "");
+       
+        if(ImobClienteTable.isCNPJ(cnpj)){
+            String status="1";
          if(imobClienteCBstatus.isSelected()){
              status = "0";
          }    
-       
+         
+         
             if(isImobClienteAddNewButtonClick){   
                 ImobClienteTable imobCliente = new ImobClienteTable(0,imobClienteTFnome.getText(), imobClienteTFcnpj.getText(), imobClienteTFimob.getText(),status);    
                 if(!imobClientDB.inserir(imobCliente)){
@@ -186,6 +196,11 @@ public class FXMLController implements Initializable {
         imobClienteTableView.setItems(getDataFromClientesAndAddToObservableList());
         isImobClienteAddNewButtonClick=false;
         isImobClienteEditButtonClick = false;
+        }else{
+            Msg.msg("warn", "CNPJ inválido!", "Cadastro de cliente");
+        }
+        
+        
     }
 
     @FXML
@@ -203,32 +218,47 @@ public class FXMLController implements Initializable {
         if(!imobClientDB.remover(getSelectedRow.getImobClienteTableDataId())){
             Msg.msg("error", "Não foi possível excluir o cliente", "Excluindo cliente");
         }       
-        imobClienteTableView.setItems(getDataFromClientesAndAddToObservableList());
-           
-        
-       
+        imobClienteTableView.setItems(getDataFromClientesAndAddToObservableList());      
+    }
+
+    
+    @FXML
+    private void setUpClientesButtonClick(Event event) throws Exception{       
+        ConfigSql config = new ConfigSql();
+        config.setConnection(connection);
+        ConfigTable configTable = config.buscarUm(1);
+        if (configTable.getToken().equalsIgnoreCase("")) {
+            Msg.msg("warn", "Token não cadastrado!", "Token");
+        } else {
+            Parent root = FXMLLoader.load(getClass().getResource("/fxml/UpCliente.fxml"));
+            Stage stage = new Stage();
+            Scene scene = new Scene(root);
+
+            scene.setFill(Color.TRANSPARENT);
+            stage.setScene(scene);
+            stage.initStyle(StageStyle.TRANSPARENT);
+            stage.showAndWait();
+        }      
     }
     
     @FXML
-    private AnchorPane anchorPane;
-    
-    @FXML
-    private void setUpClientesButtonClick(Event event) throws Exception{        
-        Parent root = FXMLLoader.load(getClass().getResource("/fxml/UpCliente.fxml"));        
-        Stage stage = new Stage();
-        Scene scene = new Scene(root);       
-        
-        scene.setFill(Color.TRANSPARENT);
-        stage.setScene(scene);
-       // stage.setResizable(false); 
-        //stage.initStyle(StageStyle.UNDECORATED);
-       stage.initStyle(StageStyle.TRANSPARENT);      
-       stage.showAndWait();
-    }
-    
-    @FXML
-    private void setUpImobButtonClick(Event event){
-        JOptionPane.showMessageDialog(null, "Em desenvolvimento!");
+    private void setUpImobButtonClick(Event event) throws IOException {
+        ConfigSql config = new ConfigSql();
+        config.setConnection(connection);
+        ConfigTable configTable = config.buscarUm(1);
+        if (configTable.getToken().equalsIgnoreCase("")) {
+            Msg.msg("warn", "Token não cadastrado!", "Token");
+        } else {
+            Parent root = FXMLLoader.load(getClass().getResource("/fxml/UpCliente_1.fxml"));
+            Stage stage = new Stage();
+            Scene scene = new Scene(root);
+
+            scene.setFill(Color.TRANSPARENT);
+            stage.setScene(scene);
+            stage.initStyle(StageStyle.TRANSPARENT);
+            stage.showAndWait();
+        }
+
     }
 
     @FXML
