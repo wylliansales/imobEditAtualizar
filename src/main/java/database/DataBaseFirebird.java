@@ -27,7 +27,7 @@ public class DataBaseFirebird implements Database {
     public Connection conectar() {
         String url;
         String portNumber = "3050";        
-        url = "jdbc:firebirdsql:" + "localhost" + "/" + portNumber + ":" + "F:/Base de dados/BASE.FDB";     
+        url = "jdbc:firebirdsql:" + "localhost" + "/" + portNumber + ":" + System.getProperty("user.dir") +"/BASE.FDB";     
         try {
             Class.forName("org.firebirdsql.jdbc.FBDriver").newInstance();
             this.c = DriverManager.getConnection(url, "SYSDBA", "masterkey");            

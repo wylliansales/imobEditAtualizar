@@ -168,6 +168,7 @@ public class FXMLController implements Initializable {
     @FXML
     private void setImobClienteSalvarButtonClick(Event event){ 
         String cnpj = imobClienteTFcnpj.getText().replace(".", "");
+        cnpj = cnpj.trim();
         cnpj = cnpj.replace("/", "");
         cnpj = cnpj.replace("-", "");
        
@@ -179,13 +180,13 @@ public class FXMLController implements Initializable {
          
          
             if(isImobClienteAddNewButtonClick){   
-                ImobClienteTable imobCliente = new ImobClienteTable(0,imobClienteTFnome.getText(), imobClienteTFcnpj.getText(), imobClienteTFimob.getText(),status);    
+                ImobClienteTable imobCliente = new ImobClienteTable(0,imobClienteTFnome.getText().trim(), imobClienteTFcnpj.getText().trim(), imobClienteTFimob.getText().trim(),status);    
                 if(!imobClientDB.inserir(imobCliente)){
                     Msg.msg("error", "Não foi possível cadastrar o cliente", "Cadastro de cliente");
                 }
             }
             else if (isImobClienteEditButtonClick){ 
-                ImobClienteTable imobCliente = new ImobClienteTable(temp,imobClienteTFnome.getText(), imobClienteTFcnpj.getText(), imobClienteTFimob.getText(),status);
+                ImobClienteTable imobCliente = new ImobClienteTable(temp,imobClienteTFnome.getText().trim(), imobClienteTFcnpj.getText().trim(), imobClienteTFimob.getText().trim(),status);
                 if(!imobClientDB.alterar(imobCliente)){
                     Msg.msg("error", "Não foi possível atualizar o cliente", "Atualizar cliente");
                 }

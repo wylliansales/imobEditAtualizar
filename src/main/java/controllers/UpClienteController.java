@@ -72,12 +72,12 @@ public class UpClienteController implements Initializable {
                 String conteudo = imobClientDB.clienteCnpjStatus();                
                 Arquivo.criarFile(conteudo, "0000000000.txt");                
                 box.delete("0000000000.txt");  
-              /*  File upFile = new File("0000000000.txt");
+                File upFile = new File("0000000000.txt");
                 if(upFile.length() <=(2 * CHUNKED_UPLOAD_CHUNK_SIZE)){
                         box.uploadFile(box.getClient(), upFile, "/0000000000.txt");
                     }else{
                         box.chunkedUploadFile(box.getClient(), upFile, "/0000000000.txt");
-                    }             */     
+                    }               
                 Arquivo.deleteFile("0000000000.txt");
                 updateProgress(10, seconds);
                 Thread.sleep(1000);

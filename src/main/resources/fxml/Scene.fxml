@@ -75,8 +75,8 @@
             </AnchorPane>
           <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="160.0" prefWidth="100.0" style="-fx-background-color: #2b333b;">
                <children>
-                  <Button id="atualizarImob" layoutX="34.0" layoutY="25.0" mnemonicParsing="false" onAction="#setUpImobButtonClick" prefHeight="41.0" prefWidth="166.0" text="Atualizar Imob.exe" textAlignment="RIGHT" textFill="WHITE" wrapText="true" />
-                  <Button id="atualizarClientes" layoutX="210.0" layoutY="25.0" mnemonicParsing="false" onAction="#setUpClientesButtonClick" prefHeight="41.0" prefWidth="166.0" text="Atualizer Clientes" textFill="WHITE" />
+                  <Button id="atualizarImob" layoutX="34.0" layoutY="25.0" mnemonicParsing="false" onAction="#setUpImobButtonClick" prefHeight="41.0" prefWidth="166.0" text="Enviar Atualização" textAlignment="RIGHT" textFill="WHITE" wrapText="true" />
+                  <Button id="atualizarClientes" layoutX="210.0" layoutY="25.0" mnemonicParsing="false" onAction="#setUpClientesButtonClick" prefHeight="41.0" prefWidth="166.0" text="Enviar Clientes" textFill="WHITE" />
                   <ImageView fitHeight="20.0" fitWidth="19.0" layoutX="42.0" layoutY="38.0" pickOnBounds="true" preserveRatio="true">
                      <image>
                         <Image url="@../img/iconeUploadd.png" />
