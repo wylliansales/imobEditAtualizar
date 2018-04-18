@@ -154,7 +154,8 @@ public class FXMLController implements Initializable {
         imobClienteTFnome.setText(imobCliente.getImobClienteTableDataNome());
         imobClienteTFcnpj.setText(imobCliente.getImobClienteTableDataCnpj());
         imobClienteTFimob.setText(imobCliente.getImobClienteTableDataImob());
-        if ("0".equalsIgnoreCase(imobCliente.getImobClienteTableDataStatus())) {
+        if ("BLQOUEADO".equalsIgnoreCase(imobCliente.getImobClienteTableDataStatus())) {
+            
             imobClienteCBstatus.setSelected(true);
         }
         temp = imobCliente.getImobClienteTableDataId();
